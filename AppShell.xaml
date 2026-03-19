@@ -3,12 +3,13 @@
     x:Class="CollectionManagementSystem.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CollectionManagementSystem"
-    Title="CollectionManagementSystem">
+    xmlns:views="clr-namespace:CollectionManagementSystem.Views"
+    Title="Collection Management System"
+    FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        Title="Kolekcje"
+        ContentTemplate="{DataTemplate views:MainPage}"
         Route="MainPage" />
 
 </Shell>
