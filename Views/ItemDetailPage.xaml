@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             x:Class="CollectionManagementSystem.Views.ItemDetailPage"
+             x:DataType="viewModels:ItemDetailViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding Name}" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <Label Text="{Binding Status}" />
+                    <Label Text="{Binding Price}" />
+                    <Label Text="{Binding Rating}" />
+                    <Label Text="Komentarz:" FontAttributes="Bold" />
+                    <Label Text="{Binding Comment}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <Image Source="{Binding ImagePath}" HeightRequest="220" Aspect="AspectFit" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="8"
+                                     BindableLayout.ItemsSource="{Binding CustomFields}">
+                    <Label Text="Pola niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:CustomFieldDisplay">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Label Grid.Column="0" Text="{Binding Name}" FontAttributes="Bold" />
+                                <Label Grid.Column="1" Text="{Binding Value}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Edytuj" Command="{Binding EditCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

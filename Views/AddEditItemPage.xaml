@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             xmlns:converters="clr-namespace:CollectionManagementSystem.Converters"
+             x:Class="CollectionManagementSystem.Views.AddEditItemPage"
+             x:DataType="viewModels:AddEditItemViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Nazwa" />
+                    <Entry Text="{Binding Name}" Placeholder="Nazwa elementu" />
+
+                    <Label Text="Status" />
+                    <Picker ItemsSource="{Binding StatusOptions}"
+                            SelectedItem="{Binding SelectedStatus}"
+                            ItemDisplayBinding="{Binding Label}" />
+
+                    <Label Text="Cena" />
+                    <Entry Text="{Binding PriceInput}" Keyboard="Numeric" Placeholder="0.00" />
+
+                    <Label Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}" />
+                    <Slider Minimum="1" Maximum="10" Value="{Binding Rating}" />
+
+                    <Label Text="Komentarz" />
+                    <Editor Text="{Binding Comment}" AutoSize="TextChanges" Placeholder="Uwagi" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <Image Source="{Binding ImagePreviewPath}" HeightRequest="180" Aspect="AspectFit" />
+                    <Button Text="Wybierz obraz" Command="{Binding PickImageCommand}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10"
+                                     BindableLayout.ItemsSource="{Binding CustomFieldEditors}">
+                    <Label Text="Pola niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:CustomFieldEditorViewModel">
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                                <Label Text="{Binding ColumnName}" FontAttributes="Bold" />
+                                <Entry Grid.Row="1"
+                                       Text="{Binding Value}"
+                                       IsVisible="{Binding IsText}" />
+                                <Entry Grid.Row="1"
+                                       Text="{Binding Value}"
+                                       Keyboard="Numeric"
+                                       IsVisible="{Binding IsNumber}" />
+                                <Picker Grid.Row="1"
+                                        ItemsSource="{Binding AllowedValues}"
+                                        SelectedItem="{Binding Value}"
+                                        IsVisible="{Binding IsValueSet}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveCommand}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

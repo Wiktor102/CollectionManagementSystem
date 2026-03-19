@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             x:Class="CollectionManagementSystem.Views.CollectionListPage"
+             x:DataType="viewModels:CollectionListViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Dodaj przedmiot" Command="{Binding AddItemCommand}" />
+        <ToolbarItem Text="Podsumowanie" Command="{Binding OpenSummaryCommand}" />
+        <ToolbarItem Text="Eksportuj" Command="{Binding ExportCommand}" />
+        <ToolbarItem Text="Importuj" Command="{Binding ImportCommand}" />
+        <ToolbarItem Text="Zarządzaj kolumnami" Command="{Binding ManageColumnsCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid Padding="20">
+        <CollectionView x:Name="ItemsCollectionView"
+                        ItemsSource="{Binding SortedItems}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelectionChanged"
+                        ItemTemplate="{StaticResource CollectionItemRowTemplate}"
+                        EmptyView="Brak elementów w tej kolekcji." />
+    </Grid>
+</ContentPage>

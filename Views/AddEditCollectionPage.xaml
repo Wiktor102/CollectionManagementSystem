@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             xmlns:models="clr-namespace:CollectionManagementSystem.Models"
+             x:Class="CollectionManagementSystem.Views.AddEditCollectionPage"
+             x:DataType="viewModels:AddEditCollectionViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Dane kolekcji" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <Label Text="Nazwa" />
+                    <Entry Text="{Binding CollectionName}" Placeholder="Np. Moje książki" />
+                    <Label Text="Typ" />
+                    <Entry Text="{Binding CollectionType}" Placeholder="Np. Książki" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Kolumny niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
+                    <Label Text="Nazwa kolumny" />
+                    <Entry Text="{Binding NewColumnName}" Placeholder="Np. Autor" />
+
+                    <Label Text="Typ kolumny" />
+                    <Picker ItemsSource="{Binding ColumnTypes}"
+                            SelectedItem="{Binding NewColumnType}" />
+
+                    <Label Text="Dozwolone wartości (oddziel przecinkiem)">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.ValueSet}">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Text}">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Number}">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <Entry Text="{Binding NewAllowedValues}" Placeholder="Fantasy, Sci-Fi, Kryminał">
+                        <Entry.Triggers>
+                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.ValueSet}">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Text}">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Number}">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Entry.Triggers>
+                    </Entry>
+
+                    <Button Text="Dodaj kolumnę" Command="{Binding AddColumnCommand}" />
+
+                    <CollectionView ItemsSource="{Binding CustomColumns}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:CustomColumn">
+                                <Border Style="{StaticResource CardBorderStyle}" Margin="0,6,0,0">
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="6" RowSpacing="4">
+                                        <Label Grid.ColumnSpan="4" Text="{Binding Name}" FontAttributes="Bold" />
+                                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding Type}" />
+                                        <Button Grid.Row="1" Grid.Column="1" Text="↑"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveUpColumnCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Grid.Row="1" Grid.Column="2" Text="↓"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveDownColumnCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Grid.Row="1" Grid.Column="3" Text="Usuń"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteColumnCommand}"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveCommand}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
