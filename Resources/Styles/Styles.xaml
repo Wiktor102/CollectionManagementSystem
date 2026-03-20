@@ -10,9 +10,7 @@
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
         <Setter Property="Shell.BackgroundColor" Value="{StaticResource SurfaceColor}" />
-        <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimaryColor}" />
-        <Setter Property="Shell.NavBarHasShadow" Value="False" />
     </Style>
 
     <Style TargetType="Label">
@@ -34,7 +32,6 @@
     <Style x:Key="SecondaryButtonStyle" TargetType="Button">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceColor}" />
-        <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
         <Setter Property="BorderWidth" Value="1" />
     </Style>
 
