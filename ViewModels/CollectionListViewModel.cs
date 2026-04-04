@@ -13,6 +13,7 @@ public sealed class CollectionListViewModel : BaseViewModel {
 	public CollectionListViewModel(ICollectionRepository repository, INavigationService navigationService) {
 		_repository = repository;
 		_navigationService = navigationService;
+		TitleBar.Subtitle = "Narzędzia kolekcji";
 
 		RefreshCommand = TrackCommand(new Command(async () => await RefreshAsync(), () => !IsBusy));
 		OpenItemCommand = TrackCommand(new Command<CollectionItem>(async item => await OpenItemAsync(item), _ => !IsBusy));
@@ -21,6 +22,12 @@ public sealed class CollectionListViewModel : BaseViewModel {
 		ExportCommand = TrackCommand(new Command(async () => await ExportAsync(), () => !IsBusy));
 		ImportCommand = TrackCommand(new Command(async () => await ImportAsync(), () => !IsBusy));
 		ManageColumnsCommand = TrackCommand(new Command(async () => await ManageColumnsAsync(), () => !IsBusy));
+		
+		TitleBar.Actions.Add(new TitleBarAction("Dodaj przedmiot", AddItemCommand));
+		TitleBar.Actions.Add(new TitleBarAction("Podsumowanie", OpenSummaryCommand));
+		TitleBar.Actions.Add(new TitleBarAction("Eksport", ExportCommand));
+		TitleBar.Actions.Add(new TitleBarAction("Import", ImportCommand));
+		TitleBar.Actions.Add(new TitleBarAction("Kolumny", ManageColumnsCommand));
 	}
 
 	public ObservableCollection<CollectionItem> SortedItems { get; } = new();

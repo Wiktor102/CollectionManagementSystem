@@ -24,6 +24,8 @@ public abstract class BaseViewModel : INotifyPropertyChanged {
 		set => SetProperty(ref _title, value);
 	}
 
+	public TitleBarState TitleBar { get; } = new();
+
 	protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "") {
 		if (EqualityComparer<T>.Default.Equals(storage, value)) {
 			return false;

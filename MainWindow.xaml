@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:local="clr-namespace:CollectionManagementSystem"
+        x:Class="CollectionManagementSystem.MainWindow"
+        x:Name="RootWindow">
+
+    <Window.TitleBar>
+        <TitleBar BindingContext="{Binding BindingContext, Source={x:Reference RootWindow}}"
+                  Title="{Binding Title}"
+                  Subtitle="{Binding TitleBar.Subtitle}"
+                  BackgroundColor="{StaticResource SurfaceColor}"
+                  ForegroundColor="{StaticResource TextPrimaryColor}"
+                  HeightRequest="48">
+            <TitleBar.TrailingContent>
+                <HorizontalStackLayout x:Name="TitleBarActionsHost"
+                                       Spacing="6"
+                                       VerticalOptions="Center"/>
+            </TitleBar.TrailingContent>
+        </TitleBar>
+    </Window.TitleBar>
+
+    <local:AppShell x:Name="ShellRoot"/>
+</Window>

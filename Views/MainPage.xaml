@@ -3,12 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
              x:Class="CollectionManagementSystem.Views.MainPage"
-             x:DataType="viewModels:MainPageViewModel"
-             Title="{Binding Title}">
-
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Dodaj kolekcję" Command="{Binding AddCollectionCommand}" />
-    </ContentPage.ToolbarItems>
+             x:DataType="viewModels:MainPageViewModel">
 
     <Grid RowDefinitions="Auto,*" Padding="24" RowSpacing="16">
         <Border Style="{StaticResource CardBorderStyle}">

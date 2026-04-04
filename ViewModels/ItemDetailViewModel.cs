@@ -26,8 +26,10 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 		_repository = repository;
 		_navigationService = navigationService;
 		_storageService = storageService;
+		TitleBar.Subtitle = "Szczegóły elementu";
 
 		EditCommand = TrackCommand(new Command(async () => await EditAsync(), () => !IsBusy));
+		TitleBar.Actions.Add(new TitleBarAction("Edytuj", EditCommand));
 	}
 
 	public ObservableCollection<CustomFieldDisplay> CustomFields { get; } = new();

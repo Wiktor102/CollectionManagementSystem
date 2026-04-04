@@ -13,12 +13,14 @@ public sealed class MainPageViewModel : BaseViewModel {
 		_repository = repository;
 		_navigationService = navigationService;
 		Title = "Moje kolekcje";
+		TitleBar.Subtitle = "Zarządzaj kolekcjami i elementami w jednym miejscu.";
 
 		RefreshCommand = TrackCommand(new Command(async () => await InitializeAsync(), () => !IsBusy));
 		OpenCollectionCommand = TrackCommand(new Command<Collection>(async collection => await OpenCollectionAsync(collection), _ => !IsBusy));
 		AddCollectionCommand = TrackCommand(new Command(async () => await AddCollectionAsync(), () => !IsBusy));
 		EditCollectionCommand = TrackCommand(new Command<Collection>(async collection => await EditCollectionAsync(collection), _ => !IsBusy));
 		DeleteCollectionCommand = TrackCommand(new Command<Collection>(async collection => await DeleteCollectionAsync(collection), _ => !IsBusy));
+		TitleBar.Actions.Add(new TitleBarAction("Dodaj kolekcję", AddCollectionCommand));
 	}
 
 	public ObservableCollection<Collection> Collections { get; } = new();

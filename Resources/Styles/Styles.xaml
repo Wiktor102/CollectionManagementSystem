@@ -8,11 +8,6 @@
         <Setter Property="Padding" Value="0" />
     </Style>
 
-    <Style TargetType="Shell" ApplyToDerivedTypes="True">
-        <Setter Property="Shell.BackgroundColor" Value="{StaticResource SurfaceColor}" />
-        <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimaryColor}" />
-    </Style>
-
     <Style TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
@@ -33,6 +28,18 @@
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceColor}" />
         <Setter Property="BorderWidth" Value="1" />
+    </Style>
+
+    <Style x:Key="TitleBarActionButtonStyle" TargetType="Button">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="MinimumHeightRequest" Value="30" />
+        <Setter Property="MinimumWidthRequest" Value="0" />
+        <Setter Property="Margin" Value="0" />
     </Style>
 
     <Style TargetType="Entry">

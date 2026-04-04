@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace CollectionManagementSystem {
+﻿namespace CollectionManagementSystem {
 	public partial class App : Application {
 		public static IServiceProvider Services { get; set; } = default!;
 
@@ -9,8 +7,7 @@ namespace CollectionManagementSystem {
 		}
 
 		protected override Window CreateWindow(IActivationState? activationState) {
-			var shell = Services.GetRequiredService<AppShell>();
-			return new Window(shell);
+			return new MainWindow();
 		}
 	}
 }
