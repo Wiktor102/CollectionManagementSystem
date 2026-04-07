@@ -2,12 +2,8 @@ using CollectionManagementSystem.Interfaces;
 
 namespace CollectionManagementSystem.Services;
 
-public sealed class NavigationService : INavigationService {
-	private readonly NavigationParameterStore _parameterStore;
-
-	public NavigationService(NavigationParameterStore parameterStore) {
-		_parameterStore = parameterStore;
-	}
+public sealed class NavigationService(NavigationParameterStore parameterStore) : INavigationService {
+	private readonly NavigationParameterStore _parameterStore = parameterStore;
 
 	public Task NavigateToAsync(string route) {
 		return Shell.Current.GoToAsync(route);

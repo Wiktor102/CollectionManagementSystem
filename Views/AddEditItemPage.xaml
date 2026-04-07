@@ -10,37 +10,51 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
             <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Nazwa" />
-                    <Entry Text="{Binding Name}" Placeholder="Nazwa elementu" />
+                <VerticalStackLayout>
+                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="20">
+                        <VerticalStackLayout Spacing="10" Grid.Column="0" HorizontalOptions="Start">
+                            <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
+                            <Grid HeightRequest="180" WidthRequest="180">
+                                <Image Source="{Binding ImagePreviewPath}"
+                                       Aspect="AspectFit"
+                                       IsVisible="{Binding HasImage}" />
+                                <Button Text="Wybierz obraz"
+                                        Command="{Binding PickImageCommand}"
+                                        IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}"
+                                        HorizontalOptions="Fill"
+                                        VerticalOptions="Fill" />
+                            </Grid>
+                            <Button Text="Zmień obraz"
+                                    Command="{Binding PickImageCommand}"
+                                    IsVisible="{Binding HasImage}" />
+                        </VerticalStackLayout>
 
-                    <Label Text="Status" />
-                    <Picker ItemsSource="{Binding StatusOptions}"
-                            SelectedItem="{Binding SelectedStatus}"
-                            ItemDisplayBinding="{Binding Label}" />
+                        <VerticalStackLayout  Grid.Column="1">
+                            <Label Text="Nazwa" Margin="0,0,0,4"/>
+                            <Entry Text="{Binding Name}" Placeholder="Nazwa elementu" />
 
-                    <Label Text="Cena" />
-                    <Entry Text="{Binding PriceInput}" Keyboard="Numeric" Placeholder="0.00" />
+                            <Label Text="Status" Margin="0,10,0,4" />
+                            <Picker ItemsSource="{Binding StatusOptions}"
+                                    SelectedItem="{Binding SelectedStatus}"
+                                    ItemDisplayBinding="{Binding Label}" />
 
-                    <Label Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}" />
-                    <Slider Minimum="1" Maximum="10" Value="{Binding Rating}" />
+                            <Label Text="Cena" Margin="0,10,0,4" />
+                            <Entry Text="{Binding PriceInput}" Keyboard="Numeric" Placeholder="0.00" />
 
-                    <Label Text="Komentarz" />
+                            <Label Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}" Margin="0,10,0,-4" />
+                            <Slider Minimum="1" Maximum="10" Value="{Binding Rating}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Label Text="Komentarz" Margin="0,10,0,4" />
                     <Editor Text="{Binding Comment}" AutoSize="TextChanges" Placeholder="Uwagi" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
-                    <Image Source="{Binding ImagePreviewPath}" HeightRequest="180" Aspect="AspectFit" />
-                    <Button Text="Wybierz obraz" Command="{Binding PickImageCommand}" />
                 </VerticalStackLayout>
             </Border>
 

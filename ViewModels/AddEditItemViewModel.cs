@@ -76,12 +76,15 @@ public sealed class AddEditItemViewModel : BaseViewModel {
 		get => _imagePath;
 		set {
 			if (SetProperty(ref _imagePath, value)) {
+				OnPropertyChanged(nameof(HasImage));
 				ImagePreviewPath = string.IsNullOrWhiteSpace(_imagePath)
 					? string.Empty
 					: _storageService.ToAbsolutePath(_imagePath);
 			}
 		}
 	}
+
+	public bool HasImage => !string.IsNullOrWhiteSpace(ImagePath);
 
 	public string ImagePreviewPath {
 		get => _imagePreviewPath;
