@@ -17,20 +17,20 @@
     <Style TargetType="Entry">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="PlaceholderColor" Value="{StaticResource TextSecondaryColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceElevatedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
         <Setter Property="MinimumHeightRequest" Value="40" />
     </Style>
 
     <Style TargetType="Editor">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
         <Setter Property="PlaceholderColor" Value="{StaticResource TextSecondaryColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceElevatedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
         <Setter Property="MinimumHeightRequest" Value="90" />
     </Style>
 
     <Style TargetType="Picker">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceElevatedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
         <Setter Property="MinimumHeightRequest" Value="40" />
     </Style>
 
