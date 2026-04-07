@@ -18,6 +18,8 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 	private string _rating = string.Empty;
 	private string _comment = string.Empty;
 	private string _imagePath = string.Empty;
+	private bool _hasImage;
+	private bool _hasCustomFields;
 
 	public ItemDetailViewModel(
 		ICollectionRepository repository,
@@ -64,11 +66,30 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 		private set => SetProperty(ref _imagePath, value);
 	}
 
+	public bool HasImage {
+		get => _hasImage;
+		private set => SetProperty(ref _hasImage, value);
+	}
+
+	public bool HasCustomFields {
+		get => _hasCustomFields;
+		private set => SetProperty(ref _hasCustomFields, value);
+	}
+
 	public Command EditCommand { get; }
 
 	public async Task InitializeAsync(string? collectionId, string? itemId) {
 		_collectionId = collectionId ?? string.Empty;
 		_itemId = itemId ?? string.Empty;
+		Title = string.Empty;
+		Name = string.Empty;
+		Status = string.Empty;
+		Price = string.Empty;
+		Rating = string.Empty;
+		Comment = string.Empty;
+		ImagePath = string.Empty;
+		HasImage = false;
+		HasCustomFields = false;
 		CustomFields.Clear();
 
 		if (string.IsNullOrWhiteSpace(_collectionId) || string.IsNullOrWhiteSpace(_itemId)) {
@@ -91,6 +112,7 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 			ImagePath = string.IsNullOrWhiteSpace(item.ImagePath)
 				? string.Empty
 				: _storageService.ToAbsolutePath(item.ImagePath);
+			HasImage = !string.IsNullOrWhiteSpace(ImagePath);
 
 			foreach (var field in item.CustomFields) {
 				var columnName = collection.CustomColumns.FirstOrDefault(column =>
@@ -101,6 +123,8 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 					Value = field.Value
 				});
 			}
+
+			HasCustomFields = CustomFields.Count > 0;
 		});
 	}
 

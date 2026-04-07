@@ -2,39 +2,69 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             xmlns:converters="clr-namespace:CollectionManagementSystem.Converters"
              x:Class="CollectionManagementSystem.Views.ItemDetailPage"
              x:DataType="viewModels:ItemDetailViewModel"
              Title="{Binding Title}">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
             <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="{Binding Name}" Style="{StaticResource SectionHeaderLabelStyle}" />
-                    <Label Text="{Binding Status}" />
-                    <Label Text="{Binding Price}" />
-                    <Label Text="{Binding Rating}" />
-                    <Label Text="Komentarz:" FontAttributes="Bold" />
-                    <Label Text="{Binding Comment}" />
+                <VerticalStackLayout Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
+                        <VerticalStackLayout Grid.Column="0" Spacing="10" HorizontalOptions="Start">
+                            <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
+                            <Border Padding="0" WidthRequest="180" HeightRequest="180">
+                                <Grid>
+                                    <Image Source="{Binding ImagePath}"
+                                           Aspect="AspectFit"
+                                           IsVisible="{Binding HasImage}" />
+                                    <Label Text="Brak zdjęcia"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{StaticResource TextSecondaryColor}"
+                                           IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="Nazwa" Margin="0,0,0,4" />
+                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" LineBreakMode="TailTruncation" />
+
+                            <Label Text="Status" Margin="0,10,0,4" />
+                            <Label Text="{Binding Status}" />
+
+                            <Label Text="Cena" Margin="0,10,0,4" />
+                            <Label Text="{Binding Price}" />
+
+                            <Label Text="Ocena" Margin="0,10,0,4" />
+                            <Label Text="{Binding Rating}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Komentarz" Style="{StaticResource SectionHeaderLabelStyle}" />
+                        <Label Text="{Binding Comment}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
             </Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Zdjęcie" Style="{StaticResource SectionHeaderLabelStyle}" />
-                    <Image Source="{Binding ImagePath}" HeightRequest="220" Aspect="AspectFit" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="8"
+            <Border Style="{StaticResource CardBorderStyle}" IsVisible="{Binding HasCustomFields}">
+                <VerticalStackLayout Spacing="10"
                                      BindableLayout.ItemsSource="{Binding CustomFields}">
                     <Label Text="Pola niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:CustomFieldDisplay">
-                            <Grid ColumnDefinitions="Auto,*">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,2">
                                 <Label Grid.Column="0" Text="{Binding Name}" FontAttributes="Bold" />
-                                <Label Grid.Column="1" Text="{Binding Value}" />
+                                <Label Grid.Column="1" Text="{Binding Value}" LineBreakMode="WordWrap" />
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
