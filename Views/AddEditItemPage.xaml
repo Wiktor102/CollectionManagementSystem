@@ -44,7 +44,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
+            <Border Style="{StaticResource CardBorderStyle}" IsVisible="{Binding HasCustomFields}">
                 <VerticalStackLayout Spacing="10"
                                      BindableLayout.ItemsSource="{Binding CustomFieldEditors}">
                     <Label Text="Pola niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />

@@ -30,6 +30,8 @@ public sealed class AddEditItemViewModel : BaseViewModel {
 		_navigationService = navigationService;
 		_storageService = storageService;
 
+		CustomFieldEditors.CollectionChanged += (s, e) => OnPropertyChanged(nameof(HasCustomFields));
+
 		StatusOptions = new ObservableCollection<StatusOption>(new[] {
 			new StatusOption { Status = ItemStatus.Owned, Label = "Posiadane" },
 			new StatusOption { Status = ItemStatus.Used, Label = "Używane" },
@@ -46,7 +48,9 @@ public sealed class AddEditItemViewModel : BaseViewModel {
 	}
 
 	public ObservableCollection<StatusOption> StatusOptions { get; }
-	public ObservableCollection<CustomFieldEditorViewModel> CustomFieldEditors { get; } = new();
+	public ObservableCollection<CustomFieldEditorViewModel> CustomFieldEditors { get; } = [];
+
+	public bool HasCustomFields => CustomFieldEditors.Count > 0;
 
 	public string Name {
 		get => _name;

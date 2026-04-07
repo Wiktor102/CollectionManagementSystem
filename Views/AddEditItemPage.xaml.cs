@@ -1,7 +1,6 @@
 using CollectionManagementSystem.Helpers;
 using CollectionManagementSystem.Interfaces;
 using CollectionManagementSystem.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CollectionManagementSystem.Views;
 
