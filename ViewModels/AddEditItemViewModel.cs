@@ -112,16 +112,11 @@ public sealed class AddEditItemViewModel : BaseViewModel {
 		}
 
 		CustomFieldEditors.Clear();
-		foreach (var column in _collection.CustomColumns) {
-			CustomFieldEditors.Add(new CustomFieldEditorViewModel {
-				Column = new CustomColumn {
-					Id = column.Id,
-					Name = column.Name,
-					Type = column.Type,
-					AllowedValues = column.AllowedValues.ToList()
-				}
-			});
-		}
+			foreach (var column in _collection.CustomColumns) {
+				CustomFieldEditors.Add(new CustomFieldEditorViewModel {
+					Column = new CustomColumn(column.Id, column.Name, column.Type, column.AllowedValues.ToList())
+				});
+			}
 
 		if (string.IsNullOrWhiteSpace(_itemId)) {
 			IsEditMode = false;

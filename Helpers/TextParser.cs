@@ -196,12 +196,7 @@ public static class TextParser {
 				.ToList();
 		}
 
-		return new CustomColumn {
-			Id = BuildUniqueColumnId(name, existingColumns),
-			Name = name,
-			Type = type,
-			AllowedValues = allowedValues
-		};
+		return new CustomColumn(CustomColumn.BuildUniqueColumnId(name, existingColumns), name, type, allowedValues);
 	}
 
 	private static void ReadItemKeyValue(CollectionItem item, string line) {
@@ -256,11 +251,7 @@ public static class TextParser {
 			string.Equals(c.Name, columnName, StringComparison.OrdinalIgnoreCase));
 
 		if (column is null) {
-			column = new CustomColumn {
-				Id = BuildUniqueColumnId(columnName, collection.CustomColumns),
-				Name = columnName,
-				Type = CustomColumnType.Text
-			};
+			column = new CustomColumn(CustomColumn.BuildUniqueColumnId(columnName, collection.CustomColumns), columnName, CustomColumnType.Text);
 			collection.CustomColumns.Add(column);
 		}
 
@@ -282,20 +273,4 @@ public static class TextParser {
 		};
 	}
 
-	private static string BuildUniqueColumnId(string name, IReadOnlyCollection<CustomColumn> existingColumns) {
-		var baseId = string.Concat(name.Trim().ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : '_')).Trim('_');
-		if (string.IsNullOrWhiteSpace(baseId)) {
-			baseId = "column";
-		}
-
-		var candidate = baseId;
-		var index = 1;
-
-		while (existingColumns.Any(c => string.Equals(c.Id, candidate, StringComparison.OrdinalIgnoreCase))) {
-			index++;
-			candidate = $"{baseId}_{index}";
-		}
-
-		return candidate;
-	}
 }

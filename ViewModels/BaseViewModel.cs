@@ -6,7 +6,7 @@ namespace CollectionManagementSystem.ViewModels;
 public abstract class BaseViewModel : INotifyPropertyChanged {
 	private bool _isBusy;
 	private string _title = string.Empty;
-	private readonly List<Command> _trackedCommands = new();
+	private readonly List<Command> _trackedCommands = [];
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 

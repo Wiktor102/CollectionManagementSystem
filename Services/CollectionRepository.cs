@@ -4,15 +4,11 @@ using CollectionManagementSystem.Models;
 
 namespace CollectionManagementSystem.Services;
 
-public sealed class CollectionRepository : ICollectionRepository {
-	private readonly FileStorageService _storageService;
+public sealed class CollectionRepository(FileStorageService storageService) : ICollectionRepository {
+	private readonly FileStorageService _storageService = storageService;
 	private readonly SemaphoreSlim _mutex = new(1, 1);
-	private readonly List<Collection> _cache = new();
+	private readonly List<Collection> _cache = [];
 	private bool _loaded;
-
-	public CollectionRepository(FileStorageService storageService) {
-		_storageService = storageService;
-	}
 
 	public async Task<IReadOnlyList<Collection>> GetCollectionsAsync() {
 		await EnsureLoadedAsync();
@@ -47,8 +43,7 @@ public sealed class CollectionRepository : ICollectionRepository {
 
 		if (existing is null) {
 			_cache.Add(collection);
-		}
-		else if (!ReferenceEquals(existing, collection)) {
+		} else if (!ReferenceEquals(existing, collection)) {
 			existing.Name = collection.Name;
 			existing.Type = collection.Type;
 			existing.CreatedAt = collection.CreatedAt;
@@ -100,8 +95,7 @@ public sealed class CollectionRepository : ICollectionRepository {
 			}
 
 			collection.Items.Add(item);
-		}
-		else if (!ReferenceEquals(existing, item)) {
+		} else if (!ReferenceEquals(existing, item)) {
 			existing.Name = item.Name;
 			existing.Status = item.Status;
 			existing.Price = item.Price;
@@ -223,8 +217,7 @@ public sealed class CollectionRepository : ICollectionRepository {
 				if (_storageService.FileExists(collectionPath)) {
 					var collectionText = await _storageService.ReadTextAsync(collectionPath);
 					collection = TextParser.ParseCollection(collectionText, entry.Id);
-				}
-				else {
+				} else {
 					collection = new Collection {
 						Id = entry.Id,
 						Name = entry.Name,
@@ -244,8 +237,7 @@ public sealed class CollectionRepository : ICollectionRepository {
 			}
 
 			_loaded = true;
-		}
-		finally {
+		} finally {
 			_mutex.Release();
 		}
 	}
@@ -278,12 +270,11 @@ public sealed class CollectionRepository : ICollectionRepository {
 				continue;
 			}
 
-			target.CustomColumns.Add(new CustomColumn {
-				Id = BuildUniqueColumnId(importedColumn.Name, target.CustomColumns),
-				Name = importedColumn.Name,
-				Type = importedColumn.Type,
-				AllowedValues = importedColumn.AllowedValues.ToList()
-			});
+			target.CustomColumns.Add(new CustomColumn(
+				CustomColumn.BuildUniqueColumnId(importedColumn.Name, target.CustomColumns),
+				importedColumn.Name,
+				importedColumn.Type,
+				importedColumn.AllowedValues.ToList()));
 		}
 	}
 
@@ -351,21 +342,5 @@ public sealed class CollectionRepository : ICollectionRepository {
 			.ToArray();
 		var sanitized = new string(chars).Trim();
 		return string.IsNullOrWhiteSpace(sanitized) ? "Kolekcja" : sanitized;
-	}
-
-	private static string BuildUniqueColumnId(string name, IReadOnlyCollection<CustomColumn> existingColumns) {
-		var baseId = string.Concat(name.Trim().ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : '_')).Trim('_');
-		if (string.IsNullOrWhiteSpace(baseId)) {
-			baseId = "column";
-		}
-
-		var candidate = baseId;
-		var index = 1;
-		while (existingColumns.Any(c => string.Equals(c.Id, candidate, StringComparison.OrdinalIgnoreCase))) {
-			index++;
-			candidate = $"{baseId}_{index}";
-		}
-
-		return candidate;
 	}
 }

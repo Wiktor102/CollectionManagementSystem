@@ -19,59 +19,57 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Kolumny niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
-                    <Label Text="Nazwa kolumny" />
-                    <Entry Text="{Binding NewColumnName}" Placeholder="Np. Autor" />
+            <Border Style="{StaticResource CardBorderStyle}" Padding="0" Stroke="{StaticResource SurfaceColor}">
+                <VerticalStackLayout>
+                    <VerticalStackLayout Spacing="10" Padding="14" BackgroundColor="{StaticResource SurfaceColor}">
+                        <Label Text="Kolumny niestandardowe" Style="{StaticResource SectionHeaderLabelStyle}" />
+                        <Label Text="Nazwa kolumny" />
+                        <Entry Text="{Binding NewColumnName}" Placeholder="Np. Autor" />
 
-                    <Label Text="Typ kolumny" />
-                    <Picker ItemsSource="{Binding ColumnTypes}"
-                            SelectedItem="{Binding NewColumnType}" />
+                        <Label Text="Typ kolumny" />
+                        <Picker ItemsSource="{Binding ColumnTypeNames}" SelectedIndex="{Binding NewColumnTypeIndex}" />
 
-                    <Label Text="Dozwolone wartości (oddziel przecinkiem)">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.ValueSet}">
+                        <VerticalStackLayout IsVisible="False" Spacing="10">
+                            <VerticalStackLayout.Triggers>
+                                <DataTrigger Binding="{Binding NewColumnTypeIndex}" TargetType="VerticalStackLayout" Value="2">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                            </VerticalStackLayout.Triggers>
+
+                            <Label Text="Dozwolone wartości (oddziel przecinkiem)" />
+                            <Entry Placeholder="Fantasy, Sci-Fi, Kryminał" Text="{Binding NewAllowedValues}" />
+                        </VerticalStackLayout>
+                        <Button Text="Dodaj kolumnę" Command="{Binding AddColumnCommand}" />
+                    </VerticalStackLayout>
+
+                    <!-- Lista dodanych kolumn -->
+                    <CollectionView ItemsSource="{Binding CustomColumns}" SelectionMode="None" Margin="14">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.Style>
+                            <Style TargetType="CollectionView">
                                 <Setter Property="IsVisible" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Text}">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Number}">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                    <Entry Text="{Binding NewAllowedValues}" Placeholder="Fantasy, Sci-Fi, Kryminał">
-                        <Entry.Triggers>
-                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.ValueSet}">
-                                <Setter Property="IsVisible" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Text}">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Entry" Binding="{Binding NewColumnType}" Value="{x:Static models:CustomColumnType.Number}">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Entry.Triggers>
-                    </Entry>
-
-                    <Button Text="Dodaj kolumnę" Command="{Binding AddColumnCommand}" />
-
-                    <CollectionView ItemsSource="{Binding CustomColumns}" SelectionMode="None">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="CollectionView" Binding="{Binding CustomColumns.Count}" Value="0">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CollectionView.Style>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:CustomColumn">
                                 <Border Style="{StaticResource CardBorderStyle}" Margin="0,6,0,0">
                                     <Grid ColumnDefinitions="*,Auto,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="6" RowSpacing="4">
                                         <Label Grid.ColumnSpan="4" Text="{Binding Name}" FontAttributes="Bold" />
-                                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding Type}" />
-                                        <Button Grid.Row="1" Grid.Column="1" Text="↑"
+                                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding DisplayTypeAndValues}" />
+                                        <Button Grid.Row="1" Grid.Column="1" Text="↑" Style="{StaticResource SecondaryButtonStyle}"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveUpColumnCommand}"
                                                 CommandParameter="{Binding .}" />
-                                        <Button Grid.Row="1" Grid.Column="2" Text="↓"
+                                        <Button Grid.Row="1" Grid.Column="2" Text="↓" Style="{StaticResource SecondaryButtonStyle}"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveDownColumnCommand}"
                                                 CommandParameter="{Binding .}" />
-                                        <Button Grid.Row="1" Grid.Column="3" Text="Usuń"
+                                        <Button Grid.Row="1" Grid.Column="3" Text="Usuń" Style="{StaticResource SecondaryButtonStyle}"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteColumnCommand}"
                                                 CommandParameter="{Binding .}" />
                                     </Grid>
