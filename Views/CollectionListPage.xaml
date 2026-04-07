@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             xmlns:controls="clr-namespace:CollectionManagementSystem.Views.Controls"
              x:Class="CollectionManagementSystem.Views.CollectionListPage"
              x:DataType="viewModels:CollectionListViewModel"
              Title="{Binding Title}">
@@ -11,7 +12,10 @@
                         ItemsSource="{Binding SortedItems}"
                         SelectionMode="Single"
                         SelectionChanged="OnSelectionChanged"
-                        ItemTemplate="{StaticResource CollectionItemRowTemplate}"
-                        EmptyView="Brak elementów w tej kolekcji." />
+                        ItemTemplate="{StaticResource CollectionItemRowTemplate}">
+            <CollectionView.EmptyView>
+                <controls:EmptyView Title="Brak elementów w tej kolekcji" ButtonText="Dodaj nowy element" ButtonCommand="{Binding AddItemCommand}"/>
+            </CollectionView.EmptyView>
+        </CollectionView>
     </Grid>
 </ContentPage>

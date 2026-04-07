@@ -2,21 +2,31 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CollectionManagementSystem.ViewModels"
+             xmlns:controls="clr-namespace:CollectionManagementSystem.Views.Controls"
              x:Class="CollectionManagementSystem.Views.MainPage"
              x:DataType="viewModels:MainPageViewModel">
 
-    <Grid RowDefinitions="Auto,*" Padding="24" RowSpacing="16">
+    <Grid RowDefinitions="Auto,*"
+            Padding="24"
+            RowSpacing="16">
         <Border Style="{StaticResource CardBorderStyle}">
             <VerticalStackLayout Spacing="8">
-                <Label Text="Collection Management System" Style="{StaticResource HeroTitleLabelStyle}" />
-                <Label Text="Zarządzaj kolekcjami i elementami w jednym miejscu." Style="{StaticResource HeroSubtitleLabelStyle}" />
+                <Label Text="Collection Management System"
+                       Style="{StaticResource HeroTitleLabelStyle}"/>
+                <Label Text="Zarządzaj kolekcjami i elementami w jednym miejscu."
+                       Style="{StaticResource HeroSubtitleLabelStyle}"/>
             </VerticalStackLayout>
         </Border>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Collections}"
                         ItemTemplate="{StaticResource CollectionCardTemplate}"
-                        SelectionMode="None"
-                        EmptyView="Brak kolekcji. Kliknij 'Dodaj kolekcję'." />
+                        SelectionMode="None">
+            <CollectionView.EmptyView>
+                <controls:EmptyView Title="Nie masz jeszcze żadnych kolekcji"
+                                    ButtonText="Stwórz pierwszą kolekcję"
+                                    ButtonCommand="{Binding AddCollectionCommand}"/>
+            </CollectionView.EmptyView>
+        </CollectionView>
     </Grid>
 </ContentPage>
