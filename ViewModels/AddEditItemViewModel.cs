@@ -64,8 +64,14 @@ public sealed class AddEditItemViewModel : BaseViewModel {
 
 	public int Rating {
 		get => _rating;
-		set => SetProperty(ref _rating, Math.Clamp(value, 1, 10));
+		set {
+			if (SetProperty(ref _rating, Math.Clamp(value, 1, 10))) {
+				OnPropertyChanged(nameof(RatingDisplayText));
+			}
+		}
 	}
+
+	public string RatingDisplayText => $"Ocena: {Math.Clamp(Rating, 1, 10)}/10";
 
 	public string Comment {
 		get => _comment;

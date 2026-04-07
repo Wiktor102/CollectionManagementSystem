@@ -13,6 +13,7 @@ public sealed class CollectionItem {
 		ItemStatus.WantToBuy => "Chce kupic",
 		_ => "Posiadane"
 	};
+	public string RatingDisplayText => $"Ocena: {Math.Clamp(Rating, 1, 10)}/10";
 	public decimal Price { get; set; }
 	public int Rating { get; set; } = 1;
 	public string Comment { get; set; } = string.Empty;

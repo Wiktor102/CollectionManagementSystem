@@ -9,7 +9,6 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -48,7 +47,7 @@
                             <Label Text="Cena" Margin="0,10,0,4" />
                             <Entry Text="{Binding PriceInput}" Keyboard="Numeric" Placeholder="0.00" />
 
-                            <Label Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}" Margin="0,10,0,-4" />
+                            <Label Text="{Binding RatingDisplayText}" Margin="0,10,0,-4" />
                             <Slider Minimum="1" Maximum="10" Value="{Binding Rating}" />
                         </VerticalStackLayout>
                     </Grid>

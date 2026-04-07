@@ -7,7 +7,6 @@
 
     <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
     <converters:StatusToOpacityConverter x:Key="StatusToOpacityConverter"/>
-    <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter"/>
     <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
 
     <DataTemplate x:Key="CollectionCardTemplate"
@@ -71,7 +70,7 @@
                            TextColor="{StaticResource TextSecondaryColor}"/>
 
                     <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" VerticalTextAlignment="Center"
-                           Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}"
+                              Text="{Binding RatingDisplayText}"
                            TextColor="{StaticResource TextSecondaryColor}"/>
                 </Grid>
 
@@ -95,7 +94,7 @@
                            TextColor="{StaticResource TextSecondaryColor}"/>
 
                     <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" VerticalTextAlignment="Center"
-                           Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}"
+                           Text="{Binding RatingDisplayText}"
                            TextColor="{StaticResource TextSecondaryColor}"/>
                 </Grid>
             </Grid>
