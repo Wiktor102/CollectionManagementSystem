@@ -23,6 +23,11 @@ public partial class CollectionListPage : ContentPage {
 		await _viewModel.InitializeAsync(collectionId);
 	}
 
+	protected override void OnAppearing() {
+		base.OnAppearing();
+		_viewModel.RebuildSortedItems();
+	}
+
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {
 		if (e.CurrentSelection.FirstOrDefault() is not CollectionItem selectedItem) {
 			return;

@@ -5,8 +5,6 @@
     xmlns:models="clr-namespace:CollectionManagementSystem.Models"
     xmlns:converters="clr-namespace:CollectionManagementSystem.Converters">
 
-    <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
-    <converters:StatusToOpacityConverter x:Key="StatusToOpacityConverter"/>
     <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
 
     <DataTemplate x:Key="CollectionCardTemplate"
@@ -45,7 +43,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="CollectionItemRowTemplate" x:DataType="models:CollectionItem">
-        <Border Style="{StaticResource CardBorderStyle}" Opacity="{Binding Status, Converter={StaticResource StatusToOpacityConverter}}">
+        <Border Style="{StaticResource CardBorderStyle}" Opacity="{Binding StatusOpacity}">
             <Grid>
                 <Grid ColumnDefinitions="72,*,Auto"
                       RowDefinitions="Auto,Auto,Auto"
@@ -61,7 +59,7 @@
                            FontSize="16"/>
 
                     <Border Grid.Row="1" Grid.Column="1" StrokeThickness="0" Padding="8,2"
-                            BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
+                            BackgroundColor="{Binding StatusColor}">
                         <Label Text="{Binding StatusLabel}" TextColor="White" FontSize="12"/>
                     </Border>
 
@@ -85,7 +83,7 @@
                            FontSize="16"/>
 
                     <Border Grid.Row="1" Grid.Column="0" StrokeThickness="0" Padding="8,2"
-                            BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
+                            BackgroundColor="{Binding StatusColor}">
                         <Label Text="{Binding StatusLabel}" TextColor="White" FontSize="12"/>
                     </Border>
 
