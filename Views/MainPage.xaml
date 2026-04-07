@@ -14,5 +14,8 @@
                                 ButtonText="Stwórz pierwszą kolekcję"
                                 ButtonCommand="{Binding AddCollectionCommand}"/>
         </CollectionView.EmptyView>
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+        </CollectionView.ItemsLayout>
     </CollectionView>
 </ContentPage>

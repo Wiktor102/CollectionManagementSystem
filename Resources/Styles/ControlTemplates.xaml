@@ -5,84 +5,99 @@
     xmlns:models="clr-namespace:CollectionManagementSystem.Models"
     xmlns:converters="clr-namespace:CollectionManagementSystem.Converters">
 
-    <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
-    <converters:StatusToOpacityConverter x:Key="StatusToOpacityConverter" />
-    <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter" />
-    <converters:ImagePathToSourceConverter x:Key="ImagePathToSourceConverter" />
+    <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+    <converters:StatusToOpacityConverter x:Key="StatusToOpacityConverter"/>
+    <converters:RatingToDisplayConverter x:Key="RatingToDisplayConverter"/>
+    <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
 
-    <DataTemplate x:Key="CollectionCardTemplate" x:DataType="models:Collection">
+    <DataTemplate x:Key="CollectionCardTemplate"
+            x:DataType="models:Collection">
         <Border Style="{StaticResource CardBorderStyle}">
             <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="8" ColumnSpacing="10">
-                <Label Grid.Row="0"
-                       Grid.Column="0"
+                <Label Grid.Row="0" Grid.Column="0"
                        Text="{Binding Name}"
                        FontAttributes="Bold"
                        FontSize="18"
-                       TextColor="{StaticResource PrimaryColor}" />
+                       TextColor="{StaticResource PrimaryColor}"/>
 
-                <Label Grid.Row="1"
-                       Grid.Column="0"
+                <Label Grid.Row="1" Grid.Column="0"
                        Text="{Binding Type, StringFormat='Typ: {0}'}"
-                       TextColor="{StaticResource TextSecondaryColor}" />
+                       TextColor="{StaticResource TextSecondaryColor}"/>
 
-                <Label Grid.Row="2"
-                       Grid.Column="0"
+                <Label Grid.Row="2" Grid.Column="0"
                        Text="{Binding CreatedAt, StringFormat='Utworzono: {0:yyyy-MM-dd}'}"
-                       TextColor="{StaticResource TextSecondaryColor}" />
+                       TextColor="{StaticResource TextSecondaryColor}"/>
 
                 <HorizontalStackLayout Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Spacing="8">
                     <Button Text="Otwórz"
                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCollectionCommand}"
-                            CommandParameter="{Binding .}" />
+                            CommandParameter="{Binding .}"/>
                     <Button Text="Edytuj"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCollectionCommand}"
-                            CommandParameter="{Binding .}" />
+                            CommandParameter="{Binding .}"/>
                     <Button Text="Usuń"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
-                            CommandParameter="{Binding .}" />
+                            CommandParameter="{Binding .}"/>
                 </HorizontalStackLayout>
             </Grid>
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="CollectionItemRowTemplate" x:DataType="models:CollectionItem">
-        <Border Style="{StaticResource CardBorderStyle}"
-                Opacity="{Binding Status, Converter={StaticResource StatusToOpacityConverter}}">
-            <Grid ColumnDefinitions="72,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="4">
-                <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Padding="0" StrokeThickness="0">
-                    <Image Source="{Binding ImagePath, Converter={StaticResource ImagePathToSourceConverter}}"
-                           HeightRequest="64"
-                           WidthRequest="64"
-                           Aspect="AspectFill" />
-                </Border>
+        <Border Style="{StaticResource CardBorderStyle}" Opacity="{Binding Status, Converter={StaticResource StatusToOpacityConverter}}">
+            <Grid>
+                <Grid ColumnDefinitions="72,*,Auto"
+                      RowDefinitions="Auto,Auto,Auto"
+                      ColumnSpacing="10"
+                      RowSpacing="4"
+                      IsVisible="{Binding HasImage}">
+                    <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Padding="0" StrokeThickness="0">
+                        <Image Source="{Binding ImageSourcePath}" HeightRequest="64" WidthRequest="64" Aspect="AspectFill"/>
+                    </Border>
 
-                <Label Grid.Row="0"
-                       Grid.Column="1"
-                       Text="{Binding Name}"
-                       FontAttributes="Bold"
-                       FontSize="16" />
+                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}"
+                           FontAttributes="Bold"
+                           FontSize="16"/>
 
-                <Border Grid.Row="1"
-                        Grid.Column="1"
-                        StrokeThickness="0"
-                        Padding="8,2"
-                        BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
-                    <Label Text="{Binding StatusLabel}" TextColor="White" FontSize="12" />
-                </Border>
+                    <Border Grid.Row="1" Grid.Column="1" StrokeThickness="0" Padding="8,2"
+                            BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
+                        <Label Text="{Binding StatusLabel}" TextColor="White" FontSize="12"/>
+                    </Border>
 
-                <Label Grid.Row="2"
-                       Grid.Column="1"
-                       Text="{Binding Price, StringFormat='Cena: {0:0.00} zł'}"
-                       TextColor="{StaticResource TextSecondaryColor}" />
+                    <Label Grid.Row="2" Grid.Column="1"
+                           Text="{Binding Price, StringFormat='Cena: {0:0.00} zł'}"
+                           TextColor="{StaticResource TextSecondaryColor}"/>
 
-                <Label Grid.Row="0"
-                       Grid.RowSpan="3"
-                       Grid.Column="2"
-                       VerticalTextAlignment="Center"
-                       Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}"
-                       TextColor="{StaticResource TextSecondaryColor}" />
+                    <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" VerticalTextAlignment="Center"
+                           Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}"
+                           TextColor="{StaticResource TextSecondaryColor}"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto"
+                      RowDefinitions="Auto,Auto,Auto"
+                      ColumnSpacing="10"
+                      RowSpacing="4"
+                      IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}">
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="{Binding Name}"
+                           FontAttributes="Bold"
+                           FontSize="16"/>
+
+                    <Border Grid.Row="1" Grid.Column="0" StrokeThickness="0" Padding="8,2"
+                            BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
+                        <Label Text="{Binding StatusLabel}" TextColor="White" FontSize="12"/>
+                    </Border>
+
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="{Binding Price, StringFormat='Cena: {0:0.00} zł'}"
+                           TextColor="{StaticResource TextSecondaryColor}"/>
+
+                    <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" VerticalTextAlignment="Center"
+                           Text="{Binding Rating, Converter={StaticResource RatingToDisplayConverter}}"
+                           TextColor="{StaticResource TextSecondaryColor}"/>
+                </Grid>
             </Grid>
         </Border>
     </DataTemplate>

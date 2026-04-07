@@ -17,5 +17,20 @@ public sealed class CollectionItem {
 	public int Rating { get; set; } = 1;
 	public string Comment { get; set; } = string.Empty;
 	public string ImagePath { get; set; } = string.Empty;
-	public List<CustomFieldValue> CustomFields { get; set; } = new();
+	public bool HasImage => ImageSourcePath != null; // Nie mozemy bezposrednio z ImagePath, poniewaz sciezka moze być nieprawidlowa lub nieistniejaca
+	public string? ImageSourcePath {
+		get {
+			if (string.IsNullOrWhiteSpace(ImagePath)) return null;
+			if (Path.IsPathRooted(ImagePath)) return ImagePath;
+
+			var fullPath = Path.Combine(
+				FileSystem.AppDataDirectory,
+				"CollectionManagementSystem",
+				ImagePath.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar)
+			);
+
+			return File.Exists(fullPath) ? fullPath : null;
+		}
+	}
+	public List<CustomFieldValue> CustomFields { get; set; } = [];
 }

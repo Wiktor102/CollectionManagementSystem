@@ -14,8 +14,13 @@
                         SelectionChanged="OnSelectionChanged"
                         ItemTemplate="{StaticResource CollectionItemRowTemplate}">
             <CollectionView.EmptyView>
-                <controls:EmptyView Title="Brak elementów w tej kolekcji" ButtonText="Dodaj nowy element" ButtonCommand="{Binding AddItemCommand}"/>
+                <controls:EmptyView Title="Brak elementów w tej kolekcji"
+                        ButtonText="Dodaj nowy element"
+                        ButtonCommand="{Binding AddItemCommand}"/>
             </CollectionView.EmptyView>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
         </CollectionView>
     </Grid>
 </ContentPage>
