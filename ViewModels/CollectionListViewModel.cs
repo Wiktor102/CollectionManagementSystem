@@ -61,17 +61,17 @@ public sealed class CollectionListViewModel : BaseViewModel {
 			return;
 		}
 
-		await RunBusyAsync(async () => {
-			CurrentCollection = await _repository.GetCollectionAsync(CollectionId);
-			RebuildSortedItems();
-		});
+		await RunBusyAsync(LoadCollectionStateAsync);
+	}
+
+	private async Task LoadCollectionStateAsync() {
+		CurrentCollection = await _repository.GetCollectionAsync(CollectionId);
+		RebuildSortedItems();
 	}
 
 	public void RebuildSortedItems() {
 		SortedItems.Clear();
-		if (CurrentCollection is null) {
-			return;
-		}
+		if (CurrentCollection is null) return;
 
 		var sorted = CurrentCollection.Items
 			.OrderBy(item => item.Status == ItemStatus.Sold ? 1 : 0)
@@ -151,10 +151,7 @@ public sealed class CollectionListViewModel : BaseViewModel {
 	}
 
 	private async Task ImportAsync() {
-		if (CurrentCollection is null) {
-			return;
-		}
-
+		if (CurrentCollection is null) return;
 		var pickedFile = await FilePicker.Default.PickAsync(new PickOptions {
 			PickerTitle = "Wybierz plik kolekcji do importu",
 			FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>> {
@@ -162,21 +159,38 @@ public sealed class CollectionListViewModel : BaseViewModel {
 			})
 		});
 
-		if (pickedFile is null) {
-			return;
-		}
+		if (pickedFile is null) return;
+		bool? overwriteAllConflicts = null;
 
 		await RunBusyAsync(async () => {
 			await _repository.ImportIntoCollectionAsync(CurrentCollection.Id, pickedFile.FullPath, async duplicateItemName => {
-				return await Shell.Current.DisplayAlertAsync(
-					"Duplikat podczas importu",
-					$"Element '{duplicateItemName}' już istnieje. Nadpisać?",
-					"Nadpisz",
-					"Pomiń");
+				if (overwriteAllConflicts.HasValue) {
+					return overwriteAllConflicts.Value;
+				}
+
+				var choice = await Shell.Current.DisplayActionSheetAsync(
+					$"Duplikat podczas importu: element '{duplicateItemName}' już istnieje. Nadpisać?",
+					"Pomiń",
+					null,
+					$"Nadpisz '{duplicateItemName}'",
+					"Nadpisz wszystkie",
+					"Pomiń wszystkie");
+
+				switch (choice) {
+					case "Nadpisz wszystkie":
+						overwriteAllConflicts = true;
+						return true;
+					case "Pomiń wszystkie":
+						overwriteAllConflicts = false;
+						return false;
+					default:
+						return choice.StartsWith("Nadpisz", StringComparison.Ordinal);
+				}
 			});
 
-			await RefreshAsync();
-			await Shell.Current.DisplayAlertAsync("Import zakończony", "Import danych został wykonany.", "OK");
+			await LoadCollectionStateAsync();
 		});
+
+		await Shell.Current.DisplayAlertAsync("Import zakończony", "Import danych został wykonany.", "OK");
 	}
 }

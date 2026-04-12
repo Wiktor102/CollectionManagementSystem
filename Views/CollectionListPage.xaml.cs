@@ -2,7 +2,6 @@ using CollectionManagementSystem.Helpers;
 using CollectionManagementSystem.Interfaces;
 using CollectionManagementSystem.Models;
 using CollectionManagementSystem.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CollectionManagementSystem.Views;
 
@@ -23,9 +22,9 @@ public partial class CollectionListPage : ContentPage {
 		await _viewModel.InitializeAsync(collectionId);
 	}
 
-	protected override void OnAppearing() {
+	protected override async void OnAppearing() {
 		base.OnAppearing();
-		_viewModel.RebuildSortedItems();
+		await _viewModel.RefreshAsync();
 	}
 
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {

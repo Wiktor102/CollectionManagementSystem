@@ -111,14 +111,10 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 	public async Task DeleteItemAsync(string collectionId, string itemId) {
 		await EnsureLoadedAsync();
 		var collection = _cache.FirstOrDefault(c => string.Equals(c.Id, collectionId, StringComparison.OrdinalIgnoreCase));
-		if (collection is null) {
-			return;
-		}
+		if (collection is null) return;
 
 		var item = collection.Items.FirstOrDefault(i => string.Equals(i.Id, itemId, StringComparison.OrdinalIgnoreCase));
-		if (item is null) {
-			return;
-		}
+		if (item is null) return;
 
 		collection.Items.Remove(item);
 		await SaveCollectionAsync(collection);
