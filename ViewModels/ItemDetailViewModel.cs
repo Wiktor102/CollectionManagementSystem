@@ -31,6 +31,7 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 		TitleBar.Subtitle = "Szczegóły elementu";
 
 		EditCommand = TrackCommand(new Command(async () => await EditAsync(), () => !IsBusy));
+		DeleteCommand = TrackCommand(new Command(async () => await DeleteAsync(), () => !IsBusy));
 		TitleBar.Actions.Add(new TitleBarAction("Edytuj", EditCommand));
 	}
 
@@ -77,6 +78,7 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 	}
 
 	public Command EditCommand { get; }
+	public Command DeleteCommand { get; }
 
 	public async Task InitializeAsync(string? collectionId, string? itemId) {
 		_collectionId = collectionId ?? string.Empty;
@@ -131,6 +133,26 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 			[NavigationKeys.CollectionId] = _collectionId,
 			[NavigationKeys.ItemId] = _itemId
 		});
+	}
+
+	private async Task DeleteAsync() {
+		if (string.IsNullOrWhiteSpace(_collectionId) || string.IsNullOrWhiteSpace(_itemId)) {
+			return;
+		}
+
+		var itemName = string.IsNullOrWhiteSpace(Name) ? "ten element" : $"'{Name}'";
+		var confirm = await Shell.Current.DisplayAlertAsync(
+			"Usuń element",
+			$"Czy na pewno chcesz usunąć element {itemName}?",
+			"Usuń",
+			"Anuluj");
+
+		if (!confirm) return;
+		await RunBusyAsync(async () => {
+			await _repository.DeleteItemAsync(_collectionId, _itemId);
+		});
+
+		await _navigationService.GoBackAsync();
 	}
 }
 

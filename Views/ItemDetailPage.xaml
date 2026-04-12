@@ -71,7 +71,14 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Button Text="Edytuj" Command="{Binding EditCommand}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Edytuj" Command="{Binding EditCommand}" />
+                <Button Grid.Column="1"
+                        Text="Usuń"
+                        Command="{Binding DeleteCommand}"
+                        BackgroundColor="{StaticResource AccentColor}"
+                        TextColor="White" />
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
