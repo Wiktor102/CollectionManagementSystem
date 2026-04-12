@@ -22,15 +22,12 @@ public sealed class FileStorageService {
 		return Path.Combine(CollectionsPath, $"{collectionId}.txt");
 	}
 
-	public async Task<string> ReadTextAsync(string path) {
-		if (!File.Exists(path)) {
-			return string.Empty;
-		}
-
+	public static async Task<string> ReadTextAsync(string path) {
+		if (!File.Exists(path)) return string.Empty;
 		return await File.ReadAllTextAsync(path);
 	}
 
-	public async Task WriteTextAsync(string path, string content) {
+	public static async Task WriteTextAsync(string path, string content) {
 		var directory = Path.GetDirectoryName(path);
 		if (!string.IsNullOrWhiteSpace(directory)) {
 			Directory.CreateDirectory(directory);
@@ -39,17 +36,15 @@ public sealed class FileStorageService {
 		await File.WriteAllTextAsync(path, content);
 	}
 
-	public bool FileExists(string path) {
+	public static bool FileExists(string path) {
 		return File.Exists(path);
 	}
 
-	public void DeleteFile(string path) {
-		if (File.Exists(path)) {
-			File.Delete(path);
-		}
+	public static void DeleteFile(string path) {
+		if (File.Exists(path)) File.Delete(path);
 	}
 
-	public string BuildRelativeImagePath(string itemId, string extension) {
+	public static string BuildRelativeImagePath(string itemId, string extension) {
 		var cleanExtension = extension.StartsWith('.') ? extension : $".{extension}";
 		return Path.Combine("images", $"{itemId}{cleanExtension}").Replace('/', '\\');
 	}
@@ -67,7 +62,7 @@ public sealed class FileStorageService {
 		return Path.Combine(DataRootPath, fixedRelative);
 	}
 
-	public async Task CopyFileAsync(string sourcePath, string destinationPath, bool overwrite = true) {
+	public static async Task CopyFileAsync(string sourcePath, string destinationPath, bool overwrite = true) {
 		var directory = Path.GetDirectoryName(destinationPath);
 		if (!string.IsNullOrWhiteSpace(directory)) {
 			Directory.CreateDirectory(directory);

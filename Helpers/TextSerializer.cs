@@ -35,8 +35,7 @@ public static class TextSerializer {
 			if (column.Type == CustomColumnType.ValueSet) {
 				var values = string.Join("~", column.AllowedValues.Select(Clean));
 				sb.AppendLine($"COLUMN|{Clean(column.Name)}|VALUES|{values}");
-			}
-			else {
+			} else {
 				sb.AppendLine($"COLUMN|{Clean(column.Name)}|{column.Type.ToString().ToUpperInvariant()}");
 			}
 		}
@@ -80,10 +79,7 @@ public static class TextSerializer {
 	}
 
 	private static string Clean(string? value) {
-		if (string.IsNullOrEmpty(value)) {
-			return string.Empty;
-		}
-
+		if (string.IsNullOrEmpty(value)) return string.Empty;
 		return value.Replace("\r", " ").Replace("\n", " ").Trim();
 	}
 

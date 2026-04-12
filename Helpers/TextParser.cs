@@ -57,10 +57,7 @@ public static class TextParser {
 
 		foreach (var rawLine in SplitLines(text)) {
 			var line = rawLine.Trim();
-			if (string.IsNullOrWhiteSpace(line)) {
-				continue;
-			}
-
+			if (string.IsNullOrWhiteSpace(line)) continue;
 			if (line.StartsWith('[') && line.EndsWith(']')) {
 				switch (line.ToUpperInvariant()) {
 					case "[COLLECTION_META]":
@@ -119,8 +116,7 @@ public static class TextParser {
 			if (state == ParserState.ReadingItem && currentItem is not null) {
 				if (line.StartsWith("CUSTOM|", StringComparison.OrdinalIgnoreCase)) {
 					ReadCustomField(collection, currentItem, line);
-				}
-				else if (line.Contains('=') && !line.StartsWith('|')) {
+				} else if (line.Contains('=') && !line.StartsWith('|')) {
 					ReadItemKeyValue(currentItem, line);
 				}
 			}
@@ -147,9 +143,7 @@ public static class TextParser {
 
 	private static void ReadMetaKeyValue(Collection collection, string line) {
 		var split = line.Split('=', 2);
-		if (split.Length != 2) {
-			return;
-		}
+		if (split.Length != 2) return;
 
 		var key = split[0].Trim().ToUpperInvariant();
 		var value = split[1].Trim();
@@ -169,14 +163,10 @@ public static class TextParser {
 
 	private static CustomColumn? ParseColumn(string line, IReadOnlyCollection<CustomColumn> existingColumns) {
 		var parts = line.Split('|');
-		if (parts.Length < 3) {
-			return null;
-		}
+		if (parts.Length < 3) return null;
 
 		var name = parts[1].Trim();
-		if (string.IsNullOrWhiteSpace(name)) {
-			return null;
-		}
+		if (string.IsNullOrWhiteSpace(name)) return null;
 
 		var typeToken = parts[2].Trim().ToUpperInvariant();
 		var type = typeToken switch {
@@ -201,9 +191,7 @@ public static class TextParser {
 
 	private static void ReadItemKeyValue(CollectionItem item, string line) {
 		var split = line.Split('=', 2);
-		if (split.Length != 2) {
-			return;
-		}
+		if (split.Length != 2) return;
 
 		var key = split[0].Trim().ToUpperInvariant();
 		var value = split[1].Trim();
@@ -240,9 +228,7 @@ public static class TextParser {
 	private static void ReadCustomField(Collection collection, CollectionItem item, string line) {
 		var payload = line["CUSTOM|".Length..];
 		var split = payload.Split('=', 2);
-		if (split.Length != 2) {
-			return;
-		}
+		if (split.Length != 2) return;
 
 		var columnName = split[0].Trim();
 		var value = split[1].Trim();

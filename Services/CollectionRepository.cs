@@ -64,7 +64,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 		}
 
 		_cache.Remove(existing);
-		_storageService.DeleteFile(_storageService.GetCollectionPath(collectionId));
+		FileStorageService.DeleteFile(_storageService.GetCollectionPath(collectionId));
 		await SaveIndexAsync();
 	}
 
@@ -137,7 +137,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 
 		var sourceCollectionPath = _storageService.GetCollectionPath(collection.Id);
 		var destinationCollectionPath = Path.Combine(exportFolderPath, $"{collection.Id}.txt");
-		await _storageService.CopyFileAsync(sourceCollectionPath, destinationCollectionPath, true);
+		await FileStorageService.CopyFileAsync(sourceCollectionPath, destinationCollectionPath, true);
 
 		var imagesFolder = Path.Combine(exportFolderPath, "images");
 		Directory.CreateDirectory(imagesFolder);
@@ -150,7 +150,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 
 			var fileName = Path.GetFileName(sourceImage);
 			var destinationImage = Path.Combine(imagesFolder, fileName);
-			await _storageService.CopyFileAsync(sourceImage, destinationImage, true);
+			await FileStorageService.CopyFileAsync(sourceImage, destinationImage, true);
 		}
 
 		return exportFolderPath;
@@ -163,7 +163,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 			throw new InvalidOperationException("Nie znaleziono kolekcji docelowej.");
 		}
 
-		var importedText = await _storageService.ReadTextAsync(importFilePath);
+		var importedText = await FileStorageService.ReadTextAsync(importFilePath);
 		if (string.IsNullOrWhiteSpace(importedText)) {
 			return;
 		}
@@ -207,15 +207,15 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 			}
 
 			_cache.Clear();
-			var indexText = await _storageService.ReadTextAsync(_storageService.IndexPath);
+			var indexText = await FileStorageService.ReadTextAsync(_storageService.IndexPath);
 			var indexEntries = TextParser.ParseIndex(indexText);
 
 			foreach (var entry in indexEntries) {
 				var collectionPath = _storageService.GetCollectionPath(entry.Id);
 				Collection collection;
 
-				if (_storageService.FileExists(collectionPath)) {
-					var collectionText = await _storageService.ReadTextAsync(collectionPath);
+				if (FileStorageService.FileExists(collectionPath)) {
+					var collectionText = await FileStorageService.ReadTextAsync(collectionPath);
 					collection = TextParser.ParseCollection(collectionText, entry.Id);
 				} else {
 					collection = new Collection {
@@ -245,12 +245,12 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 	private async Task PersistCollectionAsync(Collection collection) {
 		var content = TextSerializer.SerializeCollection(collection);
 		var path = _storageService.GetCollectionPath(collection.Id);
-		await _storageService.WriteTextAsync(path, content);
+		await FileStorageService.WriteTextAsync(path, content);
 	}
 
 	private async Task SaveIndexAsync() {
 		var content = TextSerializer.SerializeIndex(_cache);
-		await _storageService.WriteTextAsync(_storageService.IndexPath, content);
+		await FileStorageService.WriteTextAsync(_storageService.IndexPath, content);
 	}
 
 	private static void MergeColumns(Collection target, Collection importedCollection) {
@@ -327,7 +327,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 
 		var extension = Path.GetExtension(sourcePath);
 		var targetItemId = string.IsNullOrWhiteSpace(itemId) ? Guid.NewGuid().ToString() : itemId;
-		var relativePath = _storageService.BuildRelativeImagePath(targetItemId, extension);
+		var relativePath = FileStorageService.BuildRelativeImagePath(targetItemId, extension);
 		var destinationPath = _storageService.ToAbsolutePath(relativePath);
 		Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? _storageService.ImagesPath);
 		File.Copy(sourcePath, destinationPath, true);

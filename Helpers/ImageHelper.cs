@@ -18,7 +18,7 @@ public static class ImageHelper {
 			extension = ".jpg";
 		}
 
-		var relativePath = storageService.BuildRelativeImagePath(itemId, extension);
+		var relativePath = FileStorageService.BuildRelativeImagePath(itemId, extension);
 		var absolutePath = storageService.ToAbsolutePath(relativePath);
 		var directory = Path.GetDirectoryName(absolutePath);
 

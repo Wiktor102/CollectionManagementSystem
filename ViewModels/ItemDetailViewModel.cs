@@ -99,13 +99,11 @@ public sealed class ItemDetailViewModel : BaseViewModel {
 		await RunBusyAsync(async () => {
 			var collection = await _repository.GetCollectionAsync(_collectionId);
 			var item = collection?.Items.FirstOrDefault(i => string.Equals(i.Id, _itemId, StringComparison.OrdinalIgnoreCase));
-			if (collection is null || item is null) {
-				return;
-			}
+			if (collection is null || item is null) return;
 
 			Title = item.Name;
 			Name = item.Name;
-			Status = item.Status.ToPolish();
+			Status = item.StatusLabel;
 			Price = $"{item.Price:0.00} zł";
 			Rating = $"{item.Rating}/10";
 			Comment = string.IsNullOrWhiteSpace(item.Comment) ? "Brak" : item.Comment;
