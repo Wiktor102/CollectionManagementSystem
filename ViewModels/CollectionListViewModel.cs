@@ -129,6 +129,18 @@ public sealed class CollectionListViewModel : BaseViewModel {
 			return;
 		}
 
+		var hasImages = CurrentCollection.Items.Any(item => !string.IsNullOrWhiteSpace(item.ImagePath));
+		var includeImages = false;
+		if (hasImages) {
+			var choice = await Shell.Current.DisplayActionSheetAsync(
+				"Eksport obrazów",
+				"Tylko TXT (domyślnie)",
+				null,
+				"Dołącz obrazy");
+
+			includeImages = string.Equals(choice, "Dołącz obrazy", StringComparison.Ordinal);
+		}
+
 		var selectedFolder = await Shell.Current.DisplayPromptAsync(
 			"Eksport",
 			"Podaj folder docelowy eksportu:",
@@ -145,7 +157,7 @@ public sealed class CollectionListViewModel : BaseViewModel {
 		}
 
 		await RunBusyAsync(async () => {
-			var exportPath = await _repository.ExportCollectionAsync(CurrentCollection.Id, selectedFolder);
+			var exportPath = await _repository.ExportCollectionAsync(CurrentCollection.Id, selectedFolder, includeImages);
 			await Shell.Current.DisplayAlertAsync("Eksport zakończony", $"Wyeksportowano do: {exportPath}", "OK");
 		});
 	}

@@ -11,6 +11,6 @@ public interface ICollectionRepository {
 	Task<bool> HasDuplicateItemNameAsync(string collectionId, string itemName, string? ignoredItemId = null);
 	Task UpsertItemAsync(string collectionId, CollectionItem item);
 	Task DeleteItemAsync(string collectionId, string itemId);
-	Task<string> ExportCollectionAsync(string collectionId, string destinationFolder);
+	Task<string> ExportCollectionAsync(string collectionId, string destinationFolder, bool includeImages = false);
 	Task ImportIntoCollectionAsync(string collectionId, string importFilePath, Func<string, Task<bool>> shouldOverwriteAsync);
 }

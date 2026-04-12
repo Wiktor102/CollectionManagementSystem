@@ -120,19 +120,26 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 		await SaveCollectionAsync(collection);
 	}
 
-	public async Task<string> ExportCollectionAsync(string collectionId, string destinationFolder) {
+	public async Task<string> ExportCollectionAsync(string collectionId, string destinationFolder, bool includeImages = false) {
 		await EnsureLoadedAsync();
 		var collection = _cache.FirstOrDefault(c => string.Equals(c.Id, collectionId, StringComparison.OrdinalIgnoreCase));
 		if (collection is null) {
 			throw new InvalidOperationException("Nie znaleziono kolekcji do eksportu.");
 		}
 
-		var safeFolderName = BuildSafeFolderName(collection.Name);
-		var exportFolderPath = Path.Combine(destinationFolder, safeFolderName);
-		Directory.CreateDirectory(exportFolderPath);
+		var exportBaseName = BuildExportBaseName(collection.Name);
 
 		var sourceCollectionPath = _storageService.GetCollectionPath(collection.Id);
-		var destinationCollectionPath = Path.Combine(exportFolderPath, $"{collection.Id}.txt");
+		if (!includeImages) {
+			var destinationTxtPath = Path.Combine(destinationFolder, $"{exportBaseName}.txt");
+			await FileStorageService.CopyFileAsync(sourceCollectionPath, destinationTxtPath, true);
+			return destinationTxtPath;
+		}
+
+		var exportFolderPath = Path.Combine(destinationFolder, exportBaseName);
+		Directory.CreateDirectory(exportFolderPath);
+
+		var destinationCollectionPath = Path.Combine(exportFolderPath, $"{exportBaseName}.txt");
 		await FileStorageService.CopyFileAsync(sourceCollectionPath, destinationCollectionPath, true);
 
 		var imagesFolder = Path.Combine(exportFolderPath, "images");
@@ -331,12 +338,16 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 		return relativePath;
 	}
 
-	private static string BuildSafeFolderName(string collectionName) {
+	private static string BuildExportBaseName(string collectionName) {
 		var invalid = Path.GetInvalidFileNameChars();
 		var chars = collectionName
 			.Where(c => !invalid.Contains(c))
 			.ToArray();
 		var sanitized = new string(chars).Trim();
-		return string.IsNullOrWhiteSpace(sanitized) ? "Kolekcja" : sanitized;
+		if (string.IsNullOrWhiteSpace(sanitized)) {
+			sanitized = "Kolekcja";
+		}
+
+		return $"{sanitized}_{DateTime.Now:yyyy-MM-dd}";
 	}
 }
