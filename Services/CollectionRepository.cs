@@ -159,7 +159,7 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 		return exportFolderPath;
 	}
 
-	public async Task ImportIntoCollectionAsync(string collectionId, string importFilePath, Func<string, Task<bool>> shouldOverwriteAsync) {
+	public async Task ImportIntoCollectionAsync(string collectionId, string importFilePath, Func<string, Task<ImportConflictResolution>> resolveConflictAsync) {
 		await EnsureLoadedAsync();
 		var target = _cache.FirstOrDefault(c => string.Equals(c.Id, collectionId, StringComparison.OrdinalIgnoreCase));
 		if (target is null) {
@@ -179,20 +179,26 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 			var existing = target.Items.FirstOrDefault(item =>
 				string.Equals(item.Name.Trim(), incomingItem.Name.Trim(), StringComparison.OrdinalIgnoreCase));
 
-			var mappedItem = MapImportedItem(target, importedCollection, incomingItem, importDirectory);
+			var mappedItem = MapImportedItem(target, importedCollection, incomingItem, importDirectory, incomingItem.Id);
 
 			if (existing is null) {
 				target.Items.Add(mappedItem);
 				continue;
 			}
 
-			var overwrite = await shouldOverwriteAsync(incomingItem.Name);
-			if (!overwrite) {
-				continue;
+			var resolution = await resolveConflictAsync(incomingItem.Name);
+			switch (resolution) {
+				case ImportConflictResolution.Overwrite:
+					mappedItem = MapImportedItem(target, importedCollection, incomingItem, importDirectory, existing.Id);
+					target.Items[target.Items.IndexOf(existing)] = mappedItem;
+					break;
+				case ImportConflictResolution.KeepDuplicate:
+					mappedItem = MapImportedItem(target, importedCollection, incomingItem, importDirectory, Guid.NewGuid().ToString());
+					target.Items.Add(mappedItem);
+					break;
+				default:
+					break;
 			}
-
-			mappedItem.Id = existing.Id;
-			target.Items[target.Items.IndexOf(existing)] = mappedItem;
 		}
 
 		await SaveCollectionAsync(target);
@@ -281,15 +287,19 @@ public sealed class CollectionRepository(FileStorageService storageService) : IC
 		}
 	}
 
-	private CollectionItem MapImportedItem(Collection target, Collection importedCollection, CollectionItem incomingItem, string importDirectory) {
+	private CollectionItem MapImportedItem(Collection target, Collection importedCollection, CollectionItem incomingItem, string importDirectory, string? itemId = null) {
+		var resolvedItemId = string.IsNullOrWhiteSpace(itemId)
+			? (string.IsNullOrWhiteSpace(incomingItem.Id) ? Guid.NewGuid().ToString() : incomingItem.Id)
+			: itemId;
+
 		var mapped = new CollectionItem {
-			Id = string.IsNullOrWhiteSpace(incomingItem.Id) ? Guid.NewGuid().ToString() : incomingItem.Id,
+			Id = resolvedItemId,
 			Name = incomingItem.Name,
 			Status = incomingItem.Status,
 			Price = incomingItem.Price,
 			Rating = incomingItem.Rating,
 			Comment = incomingItem.Comment,
-			ImagePath = CopyImportedImageIfNeeded(incomingItem.ImagePath, importDirectory, incomingItem.Id)
+			ImagePath = CopyImportedImageIfNeeded(incomingItem.ImagePath, importDirectory, resolvedItemId)
 		};
 
 		foreach (var field in incomingItem.CustomFields) {

@@ -177,26 +177,33 @@ public sealed class CollectionListViewModel : BaseViewModel {
 		await RunBusyAsync(async () => {
 			await _repository.ImportIntoCollectionAsync(CurrentCollection.Id, pickedFile.FullPath, async duplicateItemName => {
 				if (overwriteAllConflicts.HasValue) {
-					return overwriteAllConflicts.Value;
+					return overwriteAllConflicts.Value
+						? ImportConflictResolution.Overwrite
+						: ImportConflictResolution.Skip;
 				}
 
 				var choice = await Shell.Current.DisplayActionSheetAsync(
-					$"Duplikat podczas importu: element '{duplicateItemName}' już istnieje. Nadpisać?",
+					$"Duplikat podczas importu: element '{duplicateItemName}' już istnieje.",
 					"Pomiń",
 					null,
-					$"Nadpisz '{duplicateItemName}'",
+					"Nadpisz",
+					"Zachowaj duplikat",
 					"Nadpisz wszystkie",
 					"Pomiń wszystkie");
 
 				switch (choice) {
 					case "Nadpisz wszystkie":
 						overwriteAllConflicts = true;
-						return true;
+						return ImportConflictResolution.Overwrite;
 					case "Pomiń wszystkie":
 						overwriteAllConflicts = false;
-						return false;
+						return ImportConflictResolution.Skip;
+					case "Nadpisz":
+						return ImportConflictResolution.Overwrite;
+					case "Zachowaj duplikat":
+						return ImportConflictResolution.KeepDuplicate;
 					default:
-						return choice.StartsWith("Nadpisz", StringComparison.Ordinal);
+						return ImportConflictResolution.Skip;
 				}
 			});
 

@@ -12,5 +12,5 @@ public interface ICollectionRepository {
 	Task UpsertItemAsync(string collectionId, CollectionItem item);
 	Task DeleteItemAsync(string collectionId, string itemId);
 	Task<string> ExportCollectionAsync(string collectionId, string destinationFolder, bool includeImages = false);
-	Task ImportIntoCollectionAsync(string collectionId, string importFilePath, Func<string, Task<bool>> shouldOverwriteAsync);
+	Task ImportIntoCollectionAsync(string collectionId, string importFilePath, Func<string, Task<ImportConflictResolution>> resolveConflictAsync);
 }
